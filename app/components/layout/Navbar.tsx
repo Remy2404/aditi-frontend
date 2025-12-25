@@ -1,8 +1,18 @@
+"use client";
+
 import { Search, ShoppingCart, Heart, Menu, X } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathName = usePathname();
+  const linkClass = (path: string) => {
+    return pathName === path
+      ? "text-blue-500 font-medium"
+      : "text-gray-700 hover:text-gray-900";
+  };
 
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-10 w-full">
@@ -18,27 +28,24 @@ export default function Navbar() {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex space-x-8">
-              <a
-                href="#"
-                className="text-blue-500 font-medium hover:text-blue-600"
-              >
+              <Link href="/" className={linkClass("/")}>
                 Home
-              </a>
-              <a href="#" className="text-gray-700 hover:text-gray-900">
+              </Link>
+              <Link href="/shop" className={linkClass("/shop")}>
                 Shop
-              </a>
-              <a href="#" className="text-gray-700 hover:text-gray-900">
+              </Link>
+              <Link href="/features" className={linkClass("/features")}>
                 Features
-              </a>
-              <a href="#" className="text-gray-700 hover:text-gray-900">
+              </Link>
+              <Link href="/blog" className={linkClass("/blog")}>
                 Blog
-              </a>
-              <a href="#" className="text-gray-700 hover:text-gray-900">
+              </Link>
+              <Link href="/about" className={linkClass("/about")}>
                 About
-              </a>
-              <a href="#" className="text-gray-700 hover:text-gray-900">
+              </Link>
+              <Link href="/contact" className={linkClass("/contact")}>
                 Contact
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -71,24 +78,30 @@ export default function Navbar() {
         {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden pb-4 space-y-2">
-            <a href="#" className="block text-blue-500 font-medium py-2">
+            <Link href="/" className={`block py-2 ${linkClass("/")}`}>
               Home
-            </a>
-            <a href="#" className="block text-gray-700 py-2">
+            </Link>
+            <Link href="/shop" className={`block py-2 ${linkClass("/shop")}`}>
               Shop
-            </a>
-            <a href="#" className="block text-gray-700 py-2">
+            </Link>
+            <Link
+              href="/features"
+              className={`block py-2 ${linkClass("/features")}`}
+            >
               Features
-            </a>
-            <a href="#" className="block text-gray-700 py-2">
+            </Link>
+            <Link href="/blog" className={`block py-2 ${linkClass("/blog")}`}>
               Blog
-            </a>
-            <a href="#" className="block text-gray-700 py-2">
+            </Link>
+            <Link href="/about" className={`block py-2 ${linkClass("/about")}`}>
               About
-            </a>
-            <a href="#" className="block text-gray-700 py-2">
+            </Link>
+            <Link
+              href="/contact"
+              className={`block py-2 ${linkClass("/contact")}`}
+            >
               Contact
-            </a>
+            </Link>
           </div>
         )}
       </div>
