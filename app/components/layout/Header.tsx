@@ -1,149 +1,135 @@
-import { ChevronDown } from "lucide-react";
-import { useState } from "react";
+"use client";
 
-export default function Header() {
-  const [language, setLanguage] = useState("EN");
-  const [currency, setCurrency] = useState("USD");
-  const [langOpen, setLangOpen] = useState(false);
-  const [currencyOpen, setCurrencyOpen] = useState(false);
+import { ChevronDown, HelpCircle, User, LogOut, LayoutDashboard, Settings } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
-  const languages = ["EN", "ES", "FR", "DE", "IT", "PT"];
-  const currencies = ["USD", "EUR", "GBP", "CAD", "AUD"];
+// --- Reusable Dropdown Component (Language/Currency) ---
+interface DropdownProps {
+  label: string;
+  options: string[];
+  selected: string;
+  onSelect: (value: string) => void;
+}
+
+function SystemDropdown({ label, options, selected, onSelect }: DropdownProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
-    <div className="bg-gray-900 text-gray-100 text-xs sm:text-sm border-b border-gray-800">
+    <div className="relative z-50" ref={dropdownRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors duration-200 py-1"
+      >
+        <span className="text-xs sm:text-sm font-medium">{selected}</span>
+        <ChevronDown size={14} className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+      </button>
+
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-24 bg-gray-800 border border-gray-700 rounded-md shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="py-1">
+            {options.map((option) => (
+              <button
+                key={option}
+                onClick={() => {
+                  onSelect(option);
+                  setIsOpen(false);
+                }}
+                className={`block w-full text-left px-4 py-2 text-xs sm:text-sm transition-colors ${
+                  selected === option
+                    ? "bg-gray-700 text-white font-semibold"
+                    : "text-gray-300 hover:bg-gray-700/50 hover:text-white"
+                }`}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+// --- Main Header Component ---
+export default function Header() {
+  const { user, loading, signOut } = useAuth(); // Hook from AuthContext
+  const [language, setLanguage] = useState("EN");
+  const [currency, setCurrency] = useState("USD");
+
+  const languages = ["EN", "ES", "FR", "DE"];
+  const currencies = ["USD", "EUR", "GBP"];
+
+  return (
+    <div className="bg-gradient-to-r from-gray-900 via-gray-950 to-gray-900 text-gray-100 border-b border-gray-800 relative z-50">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-10 sm:h-12">
+        <div className="flex items-center justify-between h-12">
+          
           {/* Left - Promo Text */}
-          <div className="flex-1 overflow-hidden">
-            <p className="text-gray-300 truncate text-xs sm:text-sm">
-              <span className="hidden sm:inline">
-                Free shipping for standard order over $100
-              </span>
-              <span className="sm:hidden">Free shipping over $100</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-gray-300 text-xs sm:text-sm truncate flex items-center gap-2">
+              <span className="hidden sm:inline">🎉</span>
+              Free shipping on orders over <span className="text-white font-semibold bg-blue-600 px-2 py-0.5 rounded">$100</span>
             </p>
           </div>
 
-          {/* Right - Links and Dropdowns */}
-          <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
-            {/* Help & FAQs - Hidden on mobile */}
-            <a
-              href="#"
-              className="hidden md:block text-gray-300 hover:text-white transition-colors duration-200 whitespace-nowrap"
-            >
-              Help & FAQs
-            </a>
-
-            {/* Divider - Hidden on mobile */}
-            <div className="hidden md:block w-px h-5 bg-gray-700"></div>
-
-            {/* My Account */}
-            <a
-              href="#"
-              className="text-gray-300 hover:text-white transition-colors duration-200 whitespace-nowrap text-xs sm:text-sm"
-            >
-              <span className="hidden sm:inline">My Account</span>
-              <span className="sm:hidden">Account</span>
-            </a>
-
-            {/* Divider */}
-            <div className="w-px h-4 sm:h-5 bg-gray-700"></div>
-
-            {/* Language Dropdown */}
-            <div className="relative z-40">
-              <button
-                onClick={() => {
-                  setLangOpen(!langOpen);
-                  setCurrencyOpen(false);
-                }}
-                className="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors duration-200 min-w-[40px] sm:min-w-[50px]"
+          {/* Right - Actions */}
+          <div className="flex items-center divide-x divide-gray-800">
+            
+            {/* Action Links Group */}
+            <div className="flex items-center space-x-4 pr-4">
+              <Link
+                href="/help"
+                className="hidden md:flex items-center gap-2 text-xs sm:text-sm text-gray-300 hover:text-white transition-colors"
               >
-                <span className="text-xs sm:text-sm">{language}</span>
-                <ChevronDown
-                  size={14}
-                  className={`transition-transform sm:w-4 sm:h-4 ${
-                    langOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
+                <HelpCircle size={14} />
+                <span>Help</span>
+              </Link>
 
-              {langOpen && (
-                <>
-                  {/* Backdrop for mobile */}
-                  <div
-                    className="fixed inset-0 z-10 md:hidden"
-                    onClick={() => setLangOpen(false)}
-                  />
-                  <div className="absolute right-0 mt-2 w-28 sm:w-32 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-20 max-h-60 overflow-y-auto">
-                    {languages.map((lang) => (
-                      <button
-                        key={lang}
-                        onClick={() => {
-                          setLanguage(lang);
-                          setLangOpen(false);
-                        }}
-                        className={`block w-full text-left px-3 sm:px-4 py-2 hover:bg-gray-700 transition-colors text-xs sm:text-sm first:rounded-t-lg last:rounded-b-lg ${
-                          language === lang
-                            ? "bg-gray-700 text-white font-semibold"
-                            : "text-gray-300"
-                        }`}
-                      >
-                        {lang}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
+              {/* AUTH LOGIC HERE */}
+              {loading ? (
+                // Loading Skeleton for Auth State
+                <div className="h-4 w-20 bg-gray-800 animate-pulse rounded"></div>
+              ) : !user ? (
+                // Logged Out: Show Sign In / Register
+                <div className="flex items-center gap-3 text-xs sm:text-sm">
+                  <Link href="/login" className="text-gray-300 hover:text-white">
+                    Sign In
+                  </Link>
+                  <span className="text-gray-600">/</span>
+                  <Link href="/register" className="text-gray-300 hover:text-white">
+                    Register
+                  </Link>
+                </div>
+              ) : null}
             </div>
 
-            {/* Divider */}
-            <div className="w-px h-4 sm:h-5 bg-gray-700"></div>
-
-            {/* Currency Dropdown */}
-            <div className="relative z-40">
-              <button
-                onClick={() => {
-                  setCurrencyOpen(!currencyOpen);
-                  setLangOpen(false);
-                }}
-                className="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors duration-200 min-w-[50px] sm:min-w-[60px]"
-              >
-                <span className="text-xs sm:text-sm">{currency}</span>
-                <ChevronDown
-                  size={14}
-                  className={`transition-transform sm:w-4 sm:h-4 ${
-                    currencyOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-
-              {currencyOpen && (
-                <>
-                  {/* Backdrop for mobile */}
-                  <div
-                    className="fixed inset-0 z-10 md:hidden"
-                    onClick={() => setCurrencyOpen(false)}
-                  />
-                  <div className="absolute right-0 mt-2 w-28 sm:w-32 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-20 max-h-60 overflow-y-auto">
-                    {currencies.map((curr) => (
-                      <button
-                        key={curr}
-                        onClick={() => {
-                          setCurrency(curr);
-                          setCurrencyOpen(false);
-                        }}
-                        className={`block w-full text-left px-3 sm:px-4 py-2 hover:bg-gray-700 transition-colors text-xs sm:text-sm first:rounded-t-lg last:rounded-b-lg ${
-                          currency === curr
-                            ? "bg-gray-700 text-white font-semibold"
-                            : "text-gray-300"
-                        }`}
-                      >
-                        {curr}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
+            {/* Settings Dropdowns Group */}
+            <div className="flex items-center space-x-3 sm:space-x-4 pl-3 sm:pl-4">
+              <SystemDropdown
+                label="Language"
+                options={languages}
+                selected={language}
+                onSelect={setLanguage}
+              />
+              <SystemDropdown
+                label="Currency"
+                options={currencies}
+                selected={currency}
+                onSelect={setCurrency}
+              />
             </div>
           </div>
         </div>
