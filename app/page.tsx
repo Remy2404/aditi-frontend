@@ -1,14 +1,12 @@
 "use client";
 
 import Footer from "./components/layout/Footer";
-import Header from "./components/layout/Header";
 import Navbar from "./components/layout/Navbar";
 import { ArrowRight, Star, Truck, Shield, HeadphonesIcon } from "lucide-react";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50">
-      <Header />
       <Navbar />
 
       {/* Hero Section */}
