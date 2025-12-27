@@ -79,13 +79,14 @@ export default function RegisterPage() {
       });
 
       router.push("/dashboard");
-    } catch (err: any) {
-      if (err.code === 'auth/email-already-in-use') {
+    } catch (err) {
+      const error = err as { code?: string; message?: string };
+      if (error.code === 'auth/email-already-in-use') {
         setError("Email already in use.");
-      } else if (err.code === 'auth/weak-password') {
+      } else if (error.code === 'auth/weak-password') {
         setError("Password is too weak.");
       } else {
-        setError(err.message);
+        setError(error.message || "An error occurred during registration.");
       }
     } finally {
       setLoading(false);
@@ -93,7 +94,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 px-4 py-8">
+    <div className="flex justify-center items-center min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 px-4 py-8">
       <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-lg border border-gray-100">
         {/* Header */}
         <div className="mb-6">
@@ -256,7 +257,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-blue-400 disabled:to-purple-400 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg"
+                className="flex-1 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-blue-400 disabled:to-purple-400 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg"
               >
                 {loading ? (
                   <span className="flex items-center justify-center">

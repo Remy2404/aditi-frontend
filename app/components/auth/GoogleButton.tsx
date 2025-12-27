@@ -1,11 +1,15 @@
 "use client";
-import { signInWithPopup } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { auth, db, googleProvider } from "@/lib/firebase";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { signInWithPopup } from "firebase/auth";
+import { auth, googleProvider, db } from "@/lib/firebase";
+import { setDoc, doc, getDoc } from "firebase/firestore";
 
-export default function GoogleButton({ isRegister = false }: { isRegister?: boolean }) {
+export default function GoogleButton({
+  isRegister = false,
+}: {
+  isRegister?: boolean;
+}) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -25,25 +29,26 @@ export default function GoogleButton({ isRegister = false }: { isRegister?: bool
         // If first time login, create the User Profile
         await setDoc(docRef, {
           uid: user.uid,
-          name: user.displayName,
+          displayName: user.displayName,
           email: user.email,
           role: "customer",
-          image: user.photoURL, // Store Google profile pic
-          createdAt: new Date().toISOString(),
-          cart: [],
+          photoURL: user.photoURL,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         });
       }
 
-      router.push("/dashboard");
-    } catch (error: any) {
+      router.push("/");
+    } catch (error) {
       console.error("Google Auth Error:", error);
+      const firebaseError = error as { code?: string; message?: string };
 
       // Handle specific Firebase errors
-      if (error.code === "auth/popup-closed-by-user") {
+      if (firebaseError.code === "auth/popup-closed-by-user") {
         setError("Sign-in cancelled.");
-      } else if (error.code === "auth/configuration-not-found") {
+      } else if (firebaseError.code === "auth/configuration-not-found") {
         setError("Google Sign-In is not configured. Please contact support.");
-      } else if (error.code === "auth/popup-blocked") {
+      } else if (firebaseError.code === "auth/popup-blocked") {
         setError("Pop-up blocked. Please allow pop-ups for this site.");
       } else {
         setError("Failed to sign in with Google. Please try again.");

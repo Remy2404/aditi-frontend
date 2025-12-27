@@ -13,7 +13,7 @@ function AccountPageContent() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8">
+      <main className="flex-1 bg-linear-to-br from-gray-50 via-blue-50 to-indigo-50 py-8">
         <AccountContent activeTab={activeTab} />
       </main>
       <Footer />

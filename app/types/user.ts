@@ -1,8 +1,18 @@
 export interface UserProfile {
   uid: string;
   email: string;
-  name: string;
-  role: 'customer' | 'admin';
+  displayName: string;
+  name?: string;
   address?: string;
+  phone?: string;
+  photoURL?: string;
+  role: "customer" | "admin";
   createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface UserSettings {
+  emailNotifications: boolean;
+  orderUpdates: boolean;
+  newsletter: boolean;
 }

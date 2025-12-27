@@ -1,15 +1,16 @@
-import React from "react";
+"use client";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import CartDrawer from "@/components/cart/CartDrawer";
 
-const page = () => {
+export default function CartPage() {
   return (
-    <div>
+    <>
       <Navbar />
-      <main className="h-screen bg-white"></main>
+      <div className="max-w-4xl mx-auto px-4 py-12">
+        <CartDrawer />
+      </div>
       <Footer />
-    </div>
+    </>
   );
-};
-
-export default page;
+}
