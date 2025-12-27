@@ -21,9 +21,10 @@ export default function ProfileTab() {
     name: "",
     email: "",
     address: "",
-    phone: "",
+    phoneNumber: "",
     newPassword: "",
     confirmPassword: "",
+    bio: "",
   })
 
   useEffect(() => {
@@ -47,9 +48,10 @@ export default function ProfileTab() {
           name: data.name || "",
           email: data.email || "",
           address: data.address || "",
-          phone: (data as any).phone || "",
+          phoneNumber: (data as any).phoneNumber || "",
           newPassword: "",
           confirmPassword: "",
+          bio: data.bio || "",
         })
       }
     } catch (err) {
@@ -92,7 +94,7 @@ export default function ProfileTab() {
       await updateDoc(docRef, {
         name: formData.name,
         address: formData.address,
-        phone: formData.phone,
+        phone: formData.phoneNumber,
       })
 
       if (user && formData.name !== user.displayName) {
@@ -127,9 +129,10 @@ export default function ProfileTab() {
         name: profile.name || "",
         email: profile.email || "",
         address: profile.address || "",
-        phone: (profile as any).phone || "",
+        phoneNumber: (profile as any).phone || "",
         newPassword: "",
         confirmPassword: "",
+        bio: profile.bio || "",
       })
     }
     setIsEditing(false)
@@ -282,16 +285,16 @@ export default function ProfileTab() {
                 {isEditing ? (
                   <input
                     type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
                     onChange={handleInputChange}
                     placeholder="+1 (555) 000-0000"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-gray-50 hover:bg-white"
                   />
                 ) : (
                   <div className="px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <p className="text-gray-900 font-medium">{formData.phone || "Not set"}</p>
+                    <p className="text-gray-900 font-medium">{formData.phoneNumber || "Not set"}</p>
                   </div>
                 )}
               </div>
@@ -387,10 +390,6 @@ export default function ProfileTab() {
                 Account Information
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border border-blue-100">
-                  <p className="text-sm font-medium text-gray-600 mb-2">User ID</p>
-                  <p className="text-gray-900 font-mono text-xs break-all bg-white px-3 py-2 rounded-lg border border-blue-200">{profile.uid}</p>
-                </div>
                 <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-5 border border-purple-100">
                   <p className="text-sm font-medium text-gray-600 mb-2">Account Role</p>
                   <p className="text-gray-900 font-semibold capitalize text-lg">{profile.role}</p>
@@ -403,6 +402,13 @@ export default function ProfileTab() {
                       : new Date(profile.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                   </p>
                 </div>
+              </div>
+              <div className="">
+                <h4 className="text-md font-semibold text-gray-900 mt-6 mb-2">Bio</h4>
+                <div className="px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <p className="text-gray-900 font-medium">{profile.bio || "Not set"}</p>
+                </div>
+
               </div>
             </div>
           )}

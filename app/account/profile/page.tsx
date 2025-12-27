@@ -20,7 +20,7 @@ export default function ProfilePage() {
     name: "",
     email: "",
     address: "",
-    phone: "",
+    phoneNumber : "",
     newPassword: "",
     confirmPassword: "",
   });
@@ -46,7 +46,7 @@ export default function ProfilePage() {
           name: data.name || "",
           email: data.email || "",
           address: data.address || "",
-          phone: (data as any).phone || "",
+          phoneNumber: (data as any).phone || "",
           newPassword: "",
           confirmPassword: "",
         });
@@ -93,7 +93,7 @@ export default function ProfilePage() {
       await updateDoc(docRef, {
         name: formData.name,
         address: formData.address,
-        phone: formData.phone,
+        phone: formData.phoneNumber,
       });
 
       // Update Firebase Auth profile
@@ -131,7 +131,7 @@ export default function ProfilePage() {
         name: profile.name || "",
         email: profile.email || "",
         address: profile.address || "",
-        phone: (profile as any).phone || "",
+        phoneNumber: (profile as any).phoneNumber || "",
         newPassword: "",
         confirmPassword: "",
       });
@@ -334,14 +334,14 @@ export default function ProfilePage() {
                       type="tel"
                       id="phone"
                       name="phone"
-                      value={formData.phone}
+                      value={formData.phoneNumber}
                       onChange={handleInputChange}
                       placeholder="+1 (555) 000-0000"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-gray-50 hover:bg-white"
                     />
                   ) : (
                     <div className="px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
-                      <p className="text-gray-900 font-medium">{formData.phone || "Not set"}</p>
+                      <p className="text-gray-900 font-medium">{formData.phoneNumber || "Not set"}</p>
                     </div>
                   )}
                 </div>

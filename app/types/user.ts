@@ -5,4 +5,5 @@ export interface UserProfile {
   role: 'customer' | 'admin';
   address?: string;
   createdAt: Date;
+  bio:string;
 }
